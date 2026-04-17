@@ -74,5 +74,13 @@ public class DealerController {
     }
 
 
+    @GetMapping("/name/{name}")
+    public ResponseEntity<DealerInfo> findByName(@PathVariable String name){
+
+        return service.findUserByName(name)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 
 }

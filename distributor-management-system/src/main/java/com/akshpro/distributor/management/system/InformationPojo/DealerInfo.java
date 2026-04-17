@@ -15,7 +15,7 @@ public class DealerInfo {
 
     private String shopname;
 
-    private String address;
+    private String city;
 
     private String phone;
 
@@ -48,12 +48,12 @@ public class DealerInfo {
         this.shopname = shopname;
     }
 
-    public String getAddress() {
-        return address;
+    public String getCity() {
+        return city;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getPhone() {
@@ -63,7 +63,6 @@ public class DealerInfo {
     public void setPhone(String phone) {
         this.phone = phone;
     }
-
 
 
 

@@ -2,7 +2,6 @@ package com.akshpro.distributor.management.system.Services;
 
 import com.akshpro.distributor.management.system.InformationPojo.DealerInfo;
 import com.akshpro.distributor.management.system.reposetories.DealerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,7 +52,7 @@ public class DealerService {
 
                dealer.setName(info.getName());
                dealer.setShopname(info.getShopname());
-               dealer.setAddress(info.getAddress());
+               dealer.setCity(info.getCity());
                dealer.setPhone(info.getPhone());
 
                saveUser(dealer);
@@ -73,6 +72,13 @@ public class DealerService {
         }
         return false;
     }
+
+
+    //🔹find User (BY ID)
+    public Optional<DealerInfo> findUserByName(String name){
+        return database.findByName(name);   // 🔥 clean
+    }
+
 
 
 }

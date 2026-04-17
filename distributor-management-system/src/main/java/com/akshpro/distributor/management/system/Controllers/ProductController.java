@@ -43,6 +43,18 @@ public class ProductController {
         return ResponseEntity.ok(allproducts);
     }
 
+    // view perticular product
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductInfo> getProductById(@PathVariable long id){
+        ProductInfo product = Pservice.viewById(id);
+        if(product != null){
+            return  ResponseEntity.ok(product);
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+
+
     // update product  price
     @PutMapping("/update")
     public ResponseEntity<ProductInfo> updatePrice(@RequestBody ProductInfo  updatedInfo){
@@ -62,6 +74,15 @@ public class ProductController {
             return ResponseEntity.ok("Product with ID: "+id+" is Deleted✅");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No product with ID "+id+" found!");
+    }
+
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<ProductInfo> getProductByName(@PathVariable String name){
+        return Pservice.getProductByName(name).
+                map(ResponseEntity::ok).
+                orElseGet(()-> ResponseEntity.notFound().build());
+
     }
 
 }

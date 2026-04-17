@@ -2,7 +2,7 @@ package com.akshpro.distributor.management.system.Services;
 
 
 import com.akshpro.distributor.management.system.InformationPojo.ProductInfo;
-import com.akshpro.distributor.management.system.reposetories.ProductReposetory;
+import com.akshpro.distributor.management.system.reposetories.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,9 +14,9 @@ public class ProductService {
     // ProductInfo = entity class
     //objects are mostly name as product (Read carefullly)
 
-    private final ProductReposetory productbase;
+    private final ProductRepository productbase;
 
-    public ProductService(ProductReposetory repo){
+    public ProductService(ProductRepository repo){
         productbase = repo;
     }
 
@@ -36,6 +36,12 @@ public class ProductService {
     //🔹 view all products
     public List<ProductInfo> viewAll(){
        return productbase.findAll();
+    }
+
+//    🔹 view product by id
+    public ProductInfo viewById(long id){
+        Optional<ProductInfo> info = productbase.findById(id);
+        return info.orElse(null);
     }
 
 
@@ -64,5 +70,13 @@ public class ProductService {
         }
         return false;
     }
+
+
+    //🔹 get product by name
+    public Optional<ProductInfo> getProductByName(String name){
+        return productbase.findByName(name);
+
+    }
+
 
 }
