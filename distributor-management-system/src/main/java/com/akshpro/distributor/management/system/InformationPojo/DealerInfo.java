@@ -1,7 +1,10 @@
 package com.akshpro.distributor.management.system.InformationPojo;
 
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotBlank;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Indexed;
 
 @Entity
 @Table(name = "dealer_info")
@@ -11,12 +14,17 @@ public class DealerInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NonNull
     private String name;
 
     private String shopname;
 
+
+    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "City must contain only letters")
     private String city;
 
+    @Column(unique = true, nullable = false)
     private String phone;
 
 

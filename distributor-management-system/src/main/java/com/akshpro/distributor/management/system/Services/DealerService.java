@@ -43,8 +43,8 @@ public class DealerService {
 
 
     //🔹update user
-    public Optional<DealerInfo> updateUser(DealerInfo info){
-        long id = info.getId();
+    public Optional<DealerInfo> updateUser(DealerInfo info,long id){
+
            Optional<DealerInfo> responsedealer = database.findById(id);
 
            if(responsedealer.isPresent()) {

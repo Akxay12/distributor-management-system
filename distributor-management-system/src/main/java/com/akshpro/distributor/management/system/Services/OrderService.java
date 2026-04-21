@@ -10,7 +10,9 @@ import com.akshpro.distributor.management.system.reposetories.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -18,7 +20,7 @@ public class OrderService {
 
 
     // the entity class named = OrderInfo
-    // have a object named order (most of the time )
+    // have  object named order (most of the time )
 
     private final OrdersRepository orderBase;
     private final DealerRepository dealerRepository;
@@ -37,7 +39,7 @@ public class OrderService {
 
 
     // 🔹 create order
-    public OrderInfo createOrder(String dealerName, String productName, int quantity, LocalDateTime orderDate){
+    public OrderResponse createOrder(String dealerName, String productName, int quantity, LocalDateTime orderDate){
 
         DealerInfo dealer = dealerRepository.findByName(dealerName)
                 .orElseThrow(() -> new RuntimeException("Dealer not found"));
@@ -54,9 +56,23 @@ public class OrderService {
             order.setOrderDate(orderDate);
         }
 
-        return orderBase.save(order);
-    }
 
+
+        //  total calculate
+
+        double totalPrice = product.getPrice() * quantity;
+        order.setOrderPrice(totalPrice);
+
+        OrderInfo saved = orderBase.save(order);
+
+        return new OrderResponse(
+                saved.getId(),
+                saved.getProduct().getName(),
+                saved.getQuantity(),
+                saved.getOrderPrice(),
+                saved.getOrderDate()
+        );
+    }
 
 
 
@@ -66,17 +82,35 @@ public class OrderService {
     }
 
     //🔹 view all orders of one User
-    public List<OrderResponse> getOrdersByDealer(String dealerName){
+    public List<OrderResponse> getOrdersByDealer(long id){
 
-        List<OrderInfo> orders = orderBase.findByDealer_Name(dealerName);
-
+        List<OrderInfo> orders = orderBase.findByDealer_Id(id);
         return orders.stream()
-                .map(order -> new OrderResponse(
-                        order.getId(),
-                        order.getProduct().getName(),
-                        order.getQuantity(),
-                        order.getOrderDate()
-                ))
+                .map(order -> {
+
+                    double total = order.getQuantity() * order.getOrderPrice(); // 🔥 FIX
+
+                    return new OrderResponse(
+                            order.getId(),
+                            order.getProduct().getName(),
+                            order.getQuantity(),
+                            order.getOrderPrice(),
+                            order.getOrderDate()
+                    );
+                })
                 .toList();
     }
+
+
+
+    // delete order
+    public Boolean deleteorder(long id){
+        if(orderBase.existsById(id)){
+            orderBase.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+
 }

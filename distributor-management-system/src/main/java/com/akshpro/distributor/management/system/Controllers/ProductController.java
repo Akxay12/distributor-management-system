@@ -3,6 +3,7 @@ package com.akshpro.distributor.management.system.Controllers;
 
 import com.akshpro.distributor.management.system.InformationPojo.ProductInfo;
 import com.akshpro.distributor.management.system.Services.ProductService;
+import com.akshpro.distributor.management.system.dto.ProductRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,17 +28,15 @@ public class ProductController {
 
     // create entry of new products
     @PostMapping("/create")
-    public ResponseEntity<ProductInfo> createProduct(@RequestBody ProductInfo product){
-        ProductInfo savedproduct = Pservice.createProduct(product);
+    public ResponseEntity<ProductInfo> createProduct(@RequestBody ProductRequest request){
 
-        if(savedproduct !=null){
-            return ResponseEntity.status(201).body(savedproduct);
-        }
-        return ResponseEntity.badRequest().build();
+        ProductInfo savedproduct = Pservice.createProduct(request);
+
+        return ResponseEntity.status(201).body(savedproduct);
     }
 
     // view all products
-    @GetMapping("/view")
+    @GetMapping("/viewall")
     public ResponseEntity<List<ProductInfo>> viewAllproducts(){
         List<ProductInfo> allproducts =  Pservice.viewAll();
         return ResponseEntity.ok(allproducts);
@@ -56,10 +55,10 @@ public class ProductController {
 
 
     // update product  price
-    @PutMapping("/update")
-    public ResponseEntity<ProductInfo> updatePrice(@RequestBody ProductInfo  updatedInfo){
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ProductInfo> updatePrice(@RequestBody ProductInfo  updatedInfo, @PathVariable long id){
 
-        Optional<ProductInfo> updatedEntry = Pservice.updateProduct(updatedInfo);
+        Optional<ProductInfo> updatedEntry = Pservice.updateProduct(updatedInfo,id);
 
        return updatedEntry.map(ResponseEntity::ok)
                .orElseGet(()->ResponseEntity.notFound().build());
@@ -77,6 +76,7 @@ public class ProductController {
     }
 
 
+    // view product by name
     @GetMapping("/name/{name}")
     public ResponseEntity<ProductInfo> getProductByName(@PathVariable String name){
         return Pservice.getProductByName(name).

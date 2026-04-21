@@ -53,9 +53,9 @@ public class DealerController {
     }
 
     // update user
-    @PutMapping("/update")
-    public ResponseEntity<DealerInfo> updateUser(@RequestBody DealerInfo info){
-        Optional<DealerInfo> updatedealer = service.updateUser(info);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<DealerInfo> updateUser(@RequestBody DealerInfo info,@PathVariable long id){
+        Optional<DealerInfo> updatedealer = service.updateUser(info,id);
 
         return updatedealer
                 .map(ResponseEntity::ok)   // ✔ updated object bhej raha hai

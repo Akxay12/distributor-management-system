@@ -26,7 +26,11 @@ public class OrderInfo {
 
         private int quantity;
 
-        private LocalDateTime orderDate;
+        private double orderPrice;
+
+
+
+    private LocalDateTime orderDate;
 
         @PrePersist
         public void setOrderDate() {
@@ -78,5 +82,13 @@ public class OrderInfo {
 
     public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public double getOrderPrice() {
+        return orderPrice;
+    }
+
+    public void setOrderPrice(double orderPrice) {
+        this.orderPrice = orderPrice;
     }
 }

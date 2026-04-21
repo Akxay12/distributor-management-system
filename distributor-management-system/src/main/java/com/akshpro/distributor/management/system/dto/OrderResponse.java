@@ -7,12 +7,14 @@ public class OrderResponse {
     private Long orderId;
     private String productName;
     private int quantity;
+    private double orderPrice;
     private LocalDateTime orderDate;
 
-    public OrderResponse(Long orderId, String productName, int quantity, LocalDateTime orderDate) {
+    public OrderResponse(Long orderId, String productName, int quantity, double orderPrice, LocalDateTime orderDate) {
         this.orderId = orderId;
         this.productName = productName;
         this.quantity = quantity;
+        this.orderPrice = orderPrice;
         this.orderDate = orderDate;
     }
 
@@ -33,5 +35,9 @@ public class OrderResponse {
 
     public LocalDateTime getOrderDate() {
         return orderDate;
+    }
+
+    public double getOrderPrice() {
+        return orderPrice;
     }
 }

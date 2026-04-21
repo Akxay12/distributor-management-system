@@ -39,7 +39,6 @@ public class OrderController {
         );
     }
 
-
     // view All Orders
     @GetMapping("/view")
     public ResponseEntity<List<OrderInfo>> vieworder() {
@@ -48,13 +47,24 @@ public class OrderController {
     }
 
 
-    // All orders of Perticular User
-    @GetMapping("/dealer/{name}")
-    public ResponseEntity<List<OrderResponse>> getOrdersByDealer(@PathVariable String name){
+    // All orders of Perticular User(by Id)
+    @GetMapping("/dealer/{id}")
+    public ResponseEntity<List<OrderResponse>> getOrdersByDealer(@PathVariable long id){
 
-        return ResponseEntity.ok(orderService.getOrdersByDealer(name));
+        return ResponseEntity.ok(orderService.getOrdersByDealer(id));
     }
 
+
+    // delete order by id
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteOrder(@PathVariable long id){
+        boolean deleteOrNot = orderService.deleteorder(id);
+        if(deleteOrNot) {
+          return   ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.notFound().build();
+    }
 
 }
 

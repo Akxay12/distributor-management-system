@@ -2,6 +2,7 @@ package com.akshpro.distributor.management.system.Services;
 
 
 import com.akshpro.distributor.management.system.InformationPojo.ProductInfo;
+import com.akshpro.distributor.management.system.dto.ProductRequest;
 import com.akshpro.distributor.management.system.reposetories.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -28,9 +29,15 @@ public class ProductService {
 //        productbase.save(info);
 //    }
 
-    //🔹 create product
-    public ProductInfo createProduct(ProductInfo product){
-       return  productbase.save(product);
+//       create new product
+    public ProductInfo createProduct(ProductRequest request){
+
+        ProductInfo product = new ProductInfo();
+
+        product.setName(request.getName());
+        product.setPrice(request.getPrice());
+
+        return productbase.save(product);
     }
 
     //🔹 view all products
@@ -46,8 +53,8 @@ public class ProductService {
 
 
     //🔹 upadte Product
-    public Optional<ProductInfo> updateProduct(ProductInfo updatedInfo){
-        long id = updatedInfo.getId();
+    public Optional<ProductInfo> updateProduct(ProductInfo updatedInfo,long id){
+
 
         Optional<ProductInfo> info = productbase.findById(id);
         if(info.isPresent()){
