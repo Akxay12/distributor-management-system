@@ -52,6 +52,15 @@ public class DealerController {
 
     }
 
+    // get user by name
+    @GetMapping("/name/{name}")
+    public ResponseEntity<DealerInfo> findByName(@PathVariable String name){
+
+        return service.findUserByName(name)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     // update user
     @PutMapping("/update/{id}")
     public ResponseEntity<DealerInfo> updateUser(@RequestBody DealerInfo info,@PathVariable long id){
@@ -73,14 +82,17 @@ public class DealerController {
 
     }
 
+    // get dealer by city
+    @GetMapping("/city ={city}")
+    public ResponseEntity<List<DealerInfo>> getDealerByCity(@PathVariable String city){
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity<DealerInfo> findByName(@PathVariable String name){
+        List<DealerInfo> cityViseList = service.getdealerByCity(city);
 
-        return service.findUserByName(name)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(cityViseList);
     }
 
 
+
+
+    
 }

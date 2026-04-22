@@ -11,5 +11,9 @@ public interface OrdersRepository extends JpaRepository<OrderInfo, Long> {
 
     List<OrderInfo> findByDealer_Id(long id);
 
+    List<OrderInfo> findByProduct_NameIgnoreCase(String name);
     // hi
+    List<OrderInfo> findByProduct_Id(long id);
+
+    List<OrderInfo> findTop10ByOrderByOrderDateDesc();
 }

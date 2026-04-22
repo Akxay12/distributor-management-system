@@ -4,6 +4,7 @@ import com.akshpro.distributor.management.system.InformationPojo.DealerInfo;
 import com.akshpro.distributor.management.system.reposetories.DealerRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,6 +78,13 @@ public class DealerService {
     //🔹find User (BY ID)
     public Optional<DealerInfo> findUserByName(String name){
         return database.findByName(name);   // 🔥 clean
+    }
+
+
+    //get dealer by city
+    public List<DealerInfo> getdealerByCity(String city){
+
+        return database.findByCityIgnoreCase(city);
     }
 
 
