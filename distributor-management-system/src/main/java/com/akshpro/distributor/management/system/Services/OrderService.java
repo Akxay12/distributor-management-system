@@ -1,5 +1,7 @@
 package com.akshpro.distributor.management.system.Services;
 
+import com.akshpro.distributor.management.system.Exeptions.BadRequestException;
+import com.akshpro.distributor.management.system.Exeptions.ResourceNotFoundException;
 import com.akshpro.distributor.management.system.InformationPojo.DealerInfo;
 import com.akshpro.distributor.management.system.InformationPojo.OrderInfo;
 import com.akshpro.distributor.management.system.InformationPojo.ProductInfo;
@@ -9,7 +11,6 @@ import com.akshpro.distributor.management.system.reposetories.DealerRepository;
 import com.akshpro.distributor.management.system.reposetories.OrdersRepository;
 import com.akshpro.distributor.management.system.reposetories.ProductRepository;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -45,11 +46,14 @@ public class OrderService {
     public OrderResponse createOrder(String dealerName, String productName, int quantity, LocalDateTime orderDate){
 
         DealerInfo dealer = dealerRepository.findByName(dealerName)
-                .orElseThrow(() -> new RuntimeException("Dealer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Dealer not found"));
 
         ProductInfo product = productRepository.findByName(productName)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
+        if(quantity <= 0){
+            throw new BadRequestException("Quantity must be greater than zero");
+        }
         OrderInfo order = new OrderInfo();
         order.setDealer(dealer);
         order.setProduct(product);
@@ -87,20 +91,20 @@ public class OrderService {
     //🔹 view all orders of one User
     public List<OrderResponse> getOrdersByDealer(long id){
 
+        if(!dealerRepository.existsById(id)){
+            throw new ResourceNotFoundException("Dealer not found");
+        }
+
         List<OrderInfo> orders = orderBase.findByDealer_Id(id);
+
         return orders.stream()
-                .map(order -> {
-
-                    double total = order.getQuantity() * order.getOrderPrice(); // 🔥 FIX
-
-                    return new OrderResponse(
-                            order.getId(),
-                            order.getProduct().getName(),
-                            order.getQuantity(),
-                            order.getOrderPrice(),
-                            order.getOrderDate()
-                    );
-                })
+                .map(order -> new OrderResponse(
+                        order.getId(),
+                        order.getProduct().getName(),
+                        order.getQuantity(),
+                        order.getOrderPrice(),
+                        order.getOrderDate()
+                ))
                 .toList();
     }
 
@@ -108,11 +112,11 @@ public class OrderService {
 
     // delete order
     public Boolean deleteorder(long id){
-        if(orderBase.existsById(id)){
-            orderBase.deleteById(id);
-            return true;
+        if(!orderBase.existsById(id)){
+            throw new ResourceNotFoundException("order id "+id+" not present ");
         }
-        return false;
+        orderBase.deleteById(id);
+        return true;
     }
 
 
@@ -132,6 +136,10 @@ public class OrderService {
     //get orders by product name
     public List<OrderResponse> getOrdersByProductName(String name){
 
+        if(!productRepository.existsByNameIgnoreCase(name)){
+            throw new ResourceNotFoundException("Product not found🫤");
+        }
+
         List<OrderInfo> orders = orderBase.findByProduct_NameIgnoreCase(name);
 
         return orders.stream()
@@ -150,6 +158,9 @@ public class OrderService {
     //get order by product id
     public List<OrderResponse> getOrdersByProductId(long id){
 
+        if(!productRepository.existsById(id)){
+            throw new  ResourceNotFoundException("this id is not present!");
+        }
             List<OrderInfo> orderList = orderBase.findByProduct_Id(id);
             return orderList.stream().map(order -> new OrderResponse(
                     order.getId(),

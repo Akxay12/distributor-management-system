@@ -79,9 +79,7 @@ public class ProductController {
     // view product by name
     @GetMapping("/name/{name}")
     public ResponseEntity<ProductInfo> getProductByName(@PathVariable String name){
-        return Pservice.getProductByName(name).
-                map(ResponseEntity::ok).
-                orElseGet(()-> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(Pservice.getProductByName(name));
 
     }
 

@@ -1,6 +1,8 @@
 package com.akshpro.distributor.management.system.Services;
 
 
+import com.akshpro.distributor.management.system.Exeptions.BadRequestException;
+import com.akshpro.distributor.management.system.Exeptions.ResourceNotFoundException;
 import com.akshpro.distributor.management.system.InformationPojo.ProductInfo;
 import com.akshpro.distributor.management.system.dto.ProductRequest;
 import com.akshpro.distributor.management.system.reposetories.ProductRepository;
@@ -32,6 +34,14 @@ public class ProductService {
 //       create new product
     public ProductInfo createProduct(ProductRequest request){
 
+        if(request.getName() == null || request.getName().trim().isEmpty()){
+            throw new BadRequestException("Product name cannot be empty");
+        }
+
+        if(request.getPrice() <= 0){
+            throw new BadRequestException("Price must be greater than zero");
+        }
+
         ProductInfo product = new ProductInfo();
 
         product.setName(request.getName());
@@ -46,15 +56,21 @@ public class ProductService {
     }
 
 //    🔹 view product by id
-    public ProductInfo viewById(long id){
-        Optional<ProductInfo> info = productbase.findById(id);
-        return info.orElse(null);
-    }
+public ProductInfo viewById(long id){
+    return productbase.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+}
 
 
     //🔹 upadte Product
     public Optional<ProductInfo> updateProduct(ProductInfo updatedInfo,long id){
+        if(updatedInfo.getPrice() <= 0){
+            throw new BadRequestException("Price must be greater than zero");
+        }
 
+        if(updatedInfo.getName() == null || updatedInfo.getName().trim().isEmpty()){
+            throw new BadRequestException("Product name cannot be empty");
+        }
 
         Optional<ProductInfo> info = productbase.findById(id);
         if(info.isPresent()){
@@ -71,17 +87,19 @@ public class ProductService {
 
     //🔹 delete Product
     public Boolean deleteProduct(long id){
-        if(productbase.existsById(id)){
-            productbase.deleteById(id);
-            return true;
+        if(!productbase.existsById(id)){
+            throw new ResourceNotFoundException("Prodeuct not found!");
         }
-        return false;
+        productbase.deleteById(id);
+        return true;
     }
 
 
     //🔹 get product by name
-    public Optional<ProductInfo> getProductByName(String name){
-        return productbase.findByName(name);
+    public ProductInfo getProductByName(String name){
+        return productbase.findByName(name)
+                .orElseThrow(()-> new ResourceNotFoundException("No product Found🫤"));
+
 
     }
 

@@ -11,6 +11,8 @@ public interface DealerRepository extends JpaRepository<DealerInfo, Long> {
     Optional<DealerInfo> findByName(String name);  // ✔ only declaration
 
     List<DealerInfo> findByCityIgnoreCase(String city);
+
+    boolean existsByPhone(String phone);
 }
 
 

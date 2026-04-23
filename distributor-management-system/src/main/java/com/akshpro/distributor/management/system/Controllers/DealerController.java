@@ -56,9 +56,7 @@ public class DealerController {
     @GetMapping("/name/{name}")
     public ResponseEntity<DealerInfo> findByName(@PathVariable String name){
 
-        return service.findUserByName(name)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(service.findUserByName(name));
     }
 
     // update user
@@ -74,16 +72,13 @@ public class DealerController {
     //delete user (BY ID)
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> DeleteUser(@PathVariable long id){
-        Boolean deleteduser = service.deleteUserbyId(id);
-        if(deleteduser){
-            return ResponseEntity.noContent().build();
-        }
+
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
     }
 
     // get dealer by city
-    @GetMapping("/city ={city}")
+    @GetMapping("/city={city}")
     public ResponseEntity<List<DealerInfo>> getDealerByCity(@PathVariable String city){
 
         List<DealerInfo> cityViseList = service.getdealerByCity(city);
